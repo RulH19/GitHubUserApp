@@ -8,16 +8,24 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.widget.CompoundButton
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.databinding.ActivityMainBinding
+import com.example.githubuser.factory.ViewModelFactory
 import com.example.githubuser.response.ItemsItem
 import com.example.githubuser.useradapter.UsersAdapter
 import com.example.githubuser.viewmodel.MainViewModel
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 
 class MainActivity : AppCompatActivity() {
+    private val Context.dataStore : DataStore<Preferences> by preferencesDataStore(name = "settings")
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: UsersAdapter
@@ -35,14 +43,16 @@ class MainActivity : AppCompatActivity() {
             override fun onItemCliked(data: ItemsItem) {
                 Intent(this@MainActivity, DetailUserActivity::class.java).also {
                     it.putExtra(DetailUserActivity.EXTRA_NAME, data.login)
+                    it.putExtra(DetailUserActivity.EXTRA_ID, data.id)
                     startActivity(it)
                 }
             }
 
         })
+        val pref = SettingPreferences.getInstance(dataStore)
         viewModel = ViewModelProvider(
             this,
-            ViewModelProvider.NewInstanceFactory()
+            ViewModelFactory(pref)
         ).get(MainViewModel::class.java)
         binding.apply {
             rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
@@ -56,7 +66,20 @@ class MainActivity : AppCompatActivity() {
                 showLoading(false)
             }
         }
+        val switchTheme = findViewById<SwitchMaterial>(R.id.switch_theme)
 
+        viewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
+            if (isDarkModeActive) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                switchTheme.isChecked = true
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                switchTheme.isChecked = false
+            }
+        }
+        switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
+            viewModel.saveThemeSetting(isChecked)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

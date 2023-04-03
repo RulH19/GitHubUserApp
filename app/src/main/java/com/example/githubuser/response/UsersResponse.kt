@@ -8,7 +8,7 @@ data class UsersResponse(
 )
 
 data class ItemsItem(
-
+    val id : Int,
     @field:SerializedName("login")
     val login: String,
     @field:SerializedName("avatar_url")

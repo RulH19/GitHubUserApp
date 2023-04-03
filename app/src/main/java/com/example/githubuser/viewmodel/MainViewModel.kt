@@ -1,17 +1,17 @@
 package com.example.githubuser.viewmodel
 
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.githubuser.SettingPreferences
 import com.example.githubuser.api.ApiConfig
 import com.example.githubuser.response.ItemsItem
 import com.example.githubuser.response.UsersResponse
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class MainViewModel : ViewModel() {
+class MainViewModel(private val pref: SettingPreferences) : ViewModel() {
 
     val listUsers = MutableLiveData<ArrayList<ItemsItem>>()
 
@@ -46,5 +46,15 @@ class MainViewModel : ViewModel() {
 
     fun getSearchUser(): LiveData<ArrayList<ItemsItem>> {
         return listUsers
+    }
+
+    fun getThemeSettings(): LiveData<Boolean> {
+        return pref.getThemeSetting().asLiveData()
+    }
+
+    fun saveThemeSetting(isDarkModeActive: Boolean) {
+        viewModelScope.launch {
+            pref.saveThemeSetting(isDarkModeActive)
+        }
     }
 }
