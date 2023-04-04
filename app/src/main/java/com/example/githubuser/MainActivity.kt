@@ -53,19 +53,14 @@ class MainActivity : AppCompatActivity() {
         viewModel = ViewModelProvider(
             this,
             ViewModelFactory(pref)
-        ).get(MainViewModel::class.java)
-        binding.apply {
-            rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
-            rvUsers.setHasFixedSize(true)
-            rvUsers.adapter = adapter
-        }
-        showLoading(true)
+        )[MainViewModel::class.java]
         viewModel.getSearchUser().observe(this) {
             if (it != null) {
                 adapter.setList(it)
                 showLoading(false)
             }
         }
+
         val switchTheme = findViewById<SwitchMaterial>(R.id.switch_theme)
 
         viewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
@@ -80,6 +75,13 @@ class MainActivity : AppCompatActivity() {
         switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             viewModel.saveThemeSetting(isChecked)
         }
+        binding.apply {
+            rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
+            rvUsers.setHasFixedSize(true)
+            rvUsers.adapter = adapter
+        }
+        showLoading(true)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

@@ -7,6 +7,7 @@ import androidx.room.RoomDatabase
 
 @Database(entities = [FavoriteUser::class], version = 1)
 abstract class UserDatabase : RoomDatabase(){
+    abstract fun favoriteUserDao(): FavoriteUserDao
     companion object {
         var INSTANCE: UserDatabase? = null
 
@@ -19,5 +20,5 @@ abstract class UserDatabase : RoomDatabase(){
             return INSTANCE
         }
     }
-    abstract fun favoriteUserDao(): FavoriteUserDao
+
 }
