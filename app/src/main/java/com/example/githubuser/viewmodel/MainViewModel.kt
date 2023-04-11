@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.*
 import com.example.githubuser.SettingPreferences
 import com.example.githubuser.api.ApiConfig
-import com.example.githubuser.response.ItemsItem
+import com.example.githubuser.response.User
 import com.example.githubuser.response.UsersResponse
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -13,7 +13,7 @@ import retrofit2.Response
 
 class MainViewModel(private val pref: SettingPreferences) : ViewModel() {
 
-    val listUsers = MutableLiveData<ArrayList<ItemsItem>>()
+    val listUsers = MutableLiveData<ArrayList<User>>()
 
     init {
         setSearchUsers("Nurul")
@@ -31,7 +31,7 @@ class MainViewModel(private val pref: SettingPreferences) : ViewModel() {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null) {
-                        listUsers.postValue(response.body()?.items as ArrayList<ItemsItem>)
+                        listUsers.postValue(response.body()?.items)
                     }
                 } else {
                     Log.e("Cek salah", "onFailure: ${response.message()}")
@@ -44,7 +44,7 @@ class MainViewModel(private val pref: SettingPreferences) : ViewModel() {
         })
     }
 
-    fun getSearchUser(): LiveData<ArrayList<ItemsItem>> {
+    fun getSearchUser(): LiveData<ArrayList<User>> {
         return listUsers
     }
 

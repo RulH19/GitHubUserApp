@@ -5,7 +5,8 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.githubuser.SettingPreferences
 import com.example.githubuser.viewmodel.MainViewModel
 
-class ViewModelFactory(private val pref: SettingPreferences) : ViewModelProvider.NewInstanceFactory() {
+class ViewModelFactory(private val pref: SettingPreferences) :
+    ViewModelProvider.NewInstanceFactory() {
 
     @Suppress("UNCHECKED_CAST")
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

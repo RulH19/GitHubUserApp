@@ -9,7 +9,7 @@ import com.example.githubuser.api.ApiConfig
 import com.example.githubuser.local.FavoriteUser
 import com.example.githubuser.local.FavoriteUserDao
 import com.example.githubuser.local.UserDatabase
-import com.example.githubuser.response.ItemsItem
+import com.example.githubuser.response.DetailUserResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -18,7 +18,7 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DetailUserViewModel(application: Application) : AndroidViewModel(application) {
-    val user = MutableLiveData<ItemsItem>()
+    val user = MutableLiveData<DetailUserResponse>()
     private var userDao: FavoriteUserDao?
     private var userDb: UserDatabase?
 
@@ -30,10 +30,10 @@ class DetailUserViewModel(application: Application) : AndroidViewModel(applicati
     fun setUserDetail(username: String) {
 
         val client = ApiConfig.getApiService().getDetailUser(username)
-        client.enqueue(object : Callback<ItemsItem> {
+        client.enqueue(object : Callback<DetailUserResponse> {
             override fun onResponse(
-                call: Call<ItemsItem>,
-                response: Response<ItemsItem>,
+                call: Call<DetailUserResponse>,
+                response: Response<DetailUserResponse>,
             ) {
 
                 if (response.isSuccessful) {
@@ -46,21 +46,22 @@ class DetailUserViewModel(application: Application) : AndroidViewModel(applicati
                 }
             }
 
-            override fun onFailure(call: Call<ItemsItem>, t: Throwable) {
+            override fun onFailure(call: Call<DetailUserResponse>, t: Throwable) {
                 Log.e("Cek salah", "onFailure: ${t.message}")
             }
         })
     }
 
-    fun getUserDetail(): LiveData<ItemsItem> {
+    fun getUserDetail(): LiveData<DetailUserResponse> {
         return user
     }
 
-    fun addToFavorite(username: String, id: Int) {
+    fun addToFavorite(id: Int, username: String, avatarUrl: String) {
         CoroutineScope(Dispatchers.IO).launch {
             var user = FavoriteUser(
+                id,
                 username,
-                id
+                avatarUrl
             )
             userDao?.addToFavorite(user)
         }

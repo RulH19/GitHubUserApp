@@ -7,6 +7,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.CompoundButton
 import androidx.appcompat.app.AppCompatDelegate
@@ -18,14 +19,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.githubuser.databinding.ActivityMainBinding
 import com.example.githubuser.factory.ViewModelFactory
-import com.example.githubuser.response.ItemsItem
+import com.example.githubuser.response.User
 import com.example.githubuser.useradapter.UsersAdapter
 import com.example.githubuser.viewmodel.MainViewModel
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 
 class MainActivity : AppCompatActivity() {
-    private val Context.dataStore : DataStore<Preferences> by preferencesDataStore(name = "settings")
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "settings")
     private lateinit var binding: ActivityMainBinding
     private lateinit var viewModel: MainViewModel
     private lateinit var adapter: UsersAdapter
@@ -40,10 +41,11 @@ class MainActivity : AppCompatActivity() {
         adapter = UsersAdapter()
         adapter.notifyDataSetChanged()
         adapter.setOnItemClickCallback(object : UsersAdapter.OnItemClickCallback {
-            override fun onItemCliked(data: ItemsItem) {
+            override fun onItemCliked(data: User) {
                 Intent(this@MainActivity, DetailUserActivity::class.java).also {
                     it.putExtra(DetailUserActivity.EXTRA_NAME, data.login)
                     it.putExtra(DetailUserActivity.EXTRA_ID, data.id)
+                    it.putExtra(DetailUserActivity.EXTRA_URL, data.avatar_url)
                     startActivity(it)
                 }
             }
@@ -54,6 +56,13 @@ class MainActivity : AppCompatActivity() {
             this,
             ViewModelFactory(pref)
         )[MainViewModel::class.java]
+        binding.apply {
+            rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
+            rvUsers.setHasFixedSize(true)
+            rvUsers.adapter = adapter
+        }
+        showLoading(true)
+
         viewModel.getSearchUser().observe(this) {
             if (it != null) {
                 adapter.setList(it)
@@ -62,7 +71,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         val switchTheme = findViewById<SwitchMaterial>(R.id.switch_theme)
-
         viewModel.getThemeSettings().observe(this) { isDarkModeActive: Boolean ->
             if (isDarkModeActive) {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -75,12 +83,7 @@ class MainActivity : AppCompatActivity() {
         switchTheme.setOnCheckedChangeListener { _: CompoundButton?, isChecked: Boolean ->
             viewModel.saveThemeSetting(isChecked)
         }
-        binding.apply {
-            rvUsers.layoutManager = LinearLayoutManager(this@MainActivity)
-            rvUsers.setHasFixedSize(true)
-            rvUsers.adapter = adapter
-        }
-        showLoading(true)
+
 
     }
 
@@ -108,6 +111,17 @@ class MainActivity : AppCompatActivity() {
             }
         })
         return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.favorite_menu -> {
+                Intent(this, FavoriteActivity::class.java).also {
+                    startActivity(it)
+                }
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun searchUser(query: String) {

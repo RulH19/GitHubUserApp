@@ -7,10 +7,9 @@ import androidx.test.ext.junit.rules.ActivityScenarioRule
 import org.junit.Rule
 import org.junit.Test
 
-class MainActivityTest{
+class MainActivityTest {
     @get:Rule
     val activityRule = ActivityScenarioRule(MainActivity::class.java)
-
     @Test
     fun testRecycleViewMain() {
         onView(withId(R.id.rv_users)).check(matches(isDisplayed()))

@@ -12,7 +12,8 @@ import com.example.githubuser.databinding.FragmentFollowBinding
 import com.example.githubuser.useradapter.UsersAdapter
 import com.example.githubuser.viewmodel.FollowingViewModel
 
-class FollowingFragment : Fragment(R.layout.fragment_follow) {
+class
+FollowingFragment : Fragment(R.layout.fragment_follow) {
     private var _binding: FragmentFollowBinding? = null
     private val binding get() = _binding
     private lateinit var viewModel: FollowingViewModel
@@ -40,7 +41,7 @@ class FollowingFragment : Fragment(R.layout.fragment_follow) {
         viewModel = ViewModelProvider(
             this,
             ViewModelProvider.NewInstanceFactory()
-        ).get(FollowingViewModel::class.java)
+        )[FollowingViewModel::class.java]
         viewModel.setListFollowing(username)
         viewModel.getListFollowing().observe(viewLifecycleOwner) {
             if (it != null) {

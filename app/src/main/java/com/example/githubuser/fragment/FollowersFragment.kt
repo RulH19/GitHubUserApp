@@ -22,9 +22,11 @@ class FollowersFragment : Fragment(R.layout.fragment_follow) {
     @SuppressLint("NotifyDataSetChanged")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        _binding = FragmentFollowBinding.bind(view)
+
         val args = arguments
         username = args?.getString(DetailUserActivity.EXTRA_NAME).toString()
-        _binding = FragmentFollowBinding.bind(view)
+
         adapter = UsersAdapter()
         adapter.notifyDataSetChanged()
         binding?.apply {

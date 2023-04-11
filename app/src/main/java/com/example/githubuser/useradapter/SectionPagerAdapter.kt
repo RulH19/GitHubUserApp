@@ -13,7 +13,7 @@ import com.example.githubuser.fragment.FollowingFragment
 
 class SectionPagerAdapter(private val mCtx: Context, fm: FragmentManager, data: Bundle) :
     FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-    private val TAB_TITLES = intArrayOf(R.string.tab_1, R.string.tab_2)
+
     private var fragmentBundle: Bundle
 
     init {
@@ -36,5 +36,8 @@ class SectionPagerAdapter(private val mCtx: Context, fm: FragmentManager, data: 
 
     override fun getPageTitle(position: Int): CharSequence {
         return mCtx.resources.getString(TAB_TITLES[position])
+    }
+    companion object{
+        private val TAB_TITLES = intArrayOf(R.string.tab_1, R.string.tab_2)
     }
 }

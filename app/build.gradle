@@ -17,6 +17,8 @@ android {
         versionCode 1
         versionName "1.0"
 
+        buildConfigField("String", "TOKEN", '"token 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"')
+        buildConfigField("String", "API_URL", '"https://api.github.com/"')
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -40,6 +42,7 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:2.5.1"
     androidTestImplementation "androidx.room:room-testing:2.5.1"
     implementation "androidx.room:room-ktx:2.5.1"
+    implementation ("io.coil-kt:coil:1.4.0")
     kapt "androidx.room:room-compiler:2.5.1"
     androidTestImplementation 'androidx.test:runner:1.5.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

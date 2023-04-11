@@ -3,6 +3,7 @@ package com.example.githubuser
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
@@ -23,9 +24,11 @@ class DetailUserActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityDetailUserBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val username = intent.getStringExtra(EXTRA_NAME)
         val id = intent.getIntExtra(EXTRA_ID, 0)
+        val avatarUrl = intent.getStringExtra(EXTRA_URL)
         val bundle = Bundle()
         bundle.putString(EXTRA_NAME, username)
         showLoading(true)
@@ -56,29 +59,31 @@ class DetailUserActivity : AppCompatActivity() {
             viewPager.adapter = sectionPagerAdapter
             tabs.setupWithViewPager(viewPager)
         }
-        var _isChecked  = false
+        var _isChecked = false
         CoroutineScope(Dispatchers.IO).launch {
             val count = viewModel.checkUser(id)
-            withContext(Dispatchers.Main){
-                if (count != null){
-                    if(count > 0){
+            withContext(Dispatchers.Main) {
+                if (count != null) {
+                    if (count > 0) {
                         binding.favorite.isChecked = true
                         _isChecked = true
-                    }else {
+                    } else {
                         binding.favorite.isChecked = false
                         _isChecked = false
                     }
                 }
             }
         }
-        binding.favorite.setOnClickListener{
+        binding.favorite.setOnClickListener {
             _isChecked = !_isChecked
-            if(_isChecked){
-                viewModel.addToFavorite(username, id)
-                Toast.makeText(this, "Berhasil Menambahkan User ke Favorite", Toast.LENGTH_LONG).show()
-            }else{
+            if (_isChecked) {
+                viewModel.addToFavorite(id, username, avatarUrl ?: "")
+                Toast.makeText(this, "Berhasil Menambahkan User ke Favorite", Toast.LENGTH_LONG)
+                    .show()
+            } else {
                 viewModel.removeFromFavorite(id)
-                Toast.makeText(this, "Berhasil Meremove User dari Favorite", Toast.LENGTH_LONG).show()
+                Toast.makeText(this, "Berhasil Meremove User dari Favorite", Toast.LENGTH_LONG)
+                    .show()
             }
             binding.favorite.isChecked = _isChecked
         }
@@ -88,9 +93,17 @@ class DetailUserActivity : AppCompatActivity() {
         binding.progressBar.visibility = if (state) View.VISIBLE else View.GONE
 
     }
-
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            android.R.id.home -> {
+                finish()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
     companion object {
         const val EXTRA_NAME = "extra_name"
         const val EXTRA_ID = "extra_id"
+        const val EXTRA_URL = "extra_avatar"
     }
 }

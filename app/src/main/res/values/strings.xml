@@ -7,4 +7,7 @@
     <string name="todo">TODO</string>
     <string name="nighmode">nighMode</string>
     <string name="dark_mode">Dark Model</string>
+    <string name="favorite">Favorite</string>
+    <string name="detail_user">Detail User</string>
+    <string name="favorite_user">Favorite User</string>
 </resources>
